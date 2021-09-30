@@ -1,5 +1,5 @@
 {
-  "$schema": "https://vega.github.io/schema/vega/v5.json",
+
   "description": "A basic stacked bar chart example.",
   "width": 300,
   "height": 300,
@@ -9,10 +9,10 @@
     {
       "name": "table",
       "values": [
-        {"x": "first", "y": 145, "c": 0}, {"x":"first", "y": 180, "c": 1},
-        {"x": "second","y": 106, "c": 0},  {"x":"second", "y": 179, "c": 1},
-        {"x": "third", "y": 196, "c": 0},  {"x":"third", "y":510, "c": 1},
-        {"x": "crew", "y": 23, "c": 0}, {"x":  "crew", "y":862, "c": 1}
+        {"x": "first", "y": 145, "c": "femal"}, {"x":"first", "y": 180, "c": "male"},
+        {"x": "second","y": 106, "c": "femal"},  {"x":"second", "y": 179, "c": "male"},
+        {"x": "third", "y": 196, "c": "femal"},  {"x":"third", "y":510, "c": "male"},
+        {"x": "crew", "y": 23, "c": "femal"}, {"x":  "crew", "y":862, "c": "male"}
 
 
       ],
@@ -26,6 +26,7 @@
         }
       ]
     }
+
   ],
 
   "signals": [
@@ -89,6 +90,7 @@
         }
       }
     },
+
     {
       "type": "text",
       "encode": {
@@ -110,5 +112,23 @@
 
       }
     }
+
+  ],
+
+  "legends": [
+    {
+      "fill": "color",
+      "title":"sex",
+      "orient":"right"
+
+  
+    }
+  
+
+
+
+
+
+
   ]
 }
