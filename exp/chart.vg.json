@@ -54,12 +54,14 @@
       "nice": true, "zero": true,
       "domain": {"data": "table", "field": "y1"}
     },
+
     {
       "name": "color",
       "type": "ordinal",
       "range": "category",
       "domain": {"data": "table", "field": "c"}
     }
+
   ],
 
   "axes": [
