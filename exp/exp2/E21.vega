@@ -1,0 +1,12 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "description": "Stock prices of 5 Tech Companies over Time.",
+    "data": {"url": "./sunshine.csv"},
+    "mark": "point",
+    "encoding": {
+      "x": {"field": "lon","title":"longitude"},
+      "y": {"field": "lat", "type": "quantitative","title":"latitude"},
+      "color": {"field": "city", "type": "nominal"}
+    }
+  }
+  
