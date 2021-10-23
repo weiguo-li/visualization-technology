@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Bar Chart</title>
+  <script src="../d3.min.js"></script>
+  <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+
+  <style>
+    .tick text {
+      font-size: 12px; 
+    }
+  </style>
+</head>
+<body>
+    <!-- <p>lalal</p> -->
+  <script>
+      //1、定义宽高
+    const width = 600;
+    const height = 450;
+    const margin = { top: 25, right: 35, bottom: 100, left: 50 };
+
+    //2、确定初始数据
+    const data = [
+      {year:"First", male:180 ,female:145},
+      {year:"Second", male:179 ,female:106},
+      {year:"Third", male:510 ,female:196},
+      {year:"Crew", male:862 ,female:23},
+    ];
+
+    //3、堆栈图颜色设置
+	  const colors = ['green', 'purple'];  //颜色分组
+    const groups = ['male', 'female']; //类别分组
+    const layout = d3.stack().keys(groups)(data);//生成以0到groups.length-1为主键的堆栈生成器
+
+    const svg = d3.select('body')                    //选择body元素
+                  .append('svg')                     //在body元素中添加svg
+                  .attr('width', width + margin.left + margin.right) //设定<svg>的宽度属性
+                  .attr('height', height + margin.top + margin.bottom) //设定<svg>的高度属性
+                  .append('g')
+                  .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+    
+    //4、绘制坐标轴比例尺
+    const xScale = d3.scaleBand()
+    	             .padding(0.4)  //设置条形图的间隔
+    	             .domain(data.map(d => d.year))  //对条形图的横坐标进行映射
+    	             .range([0, width-15]);
+    
+
+    const yMax = 1000;
+    const yScale = d3.scaleLinear()
+    	            .domain([0, yMax])
+    	            .range([height, 0]);
+    
+    const xAxis = d3.axisBottom(xScale);
+    const yAxis = d3.axisLeft(yScale).ticks(10);
+   
+    svg.append('g')
+    	.attr('transform', `translate(0, ${height})`)
+      .call(xAxis)
+    	.selectAll('text')
+    svg.append('g').call(yAxis);
+
+    //堆栈图
+    svg
+    	.selectAll('.group')
+    	.data(layout)
+    	.enter()
+    	.append('g')
+    	.attr('year', ({key}) => key)
+    	.attr('fill', (d, i) => colors[i])
+      .selectAll('body')
+    	.data(d => d)
+    	.enter()
+    	.append('rect')
+    	.attr('x', ({data: {year}}) => xScale(year))
+    	.attr('y', ([y, h]) => yScale(h))
+        .attr('width', xScale.bandwidth())
+        .attr('height', ([y, h]) => height - yScale(h - y));
+
+    svg.append("text")
+    .attr("transform","translate(" + width + "," + (height-10) + ")")
+    .style("text-anchor","middle")
+    .style("font-size","20px")
+    .attr("fill","blue")
+    .text("Class")
+
+    svg.append("text")
+    .attr("transform","translate(10,0)")
+    .style("font-size","20px")
+    .attr("fill","red")
+    .text("Amount")
+
+    svg.append("text")
+    .attr("transform","translate(" + width +","+ (height/7) +")")
+    .style("text-anchor","middle")
+    .style("font-size","18px")
+    .attr("fill","purple")
+    .text("Female")
+
+    svg.append("text")
+    .attr("transform","translate(" + (width-10) +","+ (height/7-30) +")")
+    .style("text-anchor","middle")
+    .style("font-size","18px")
+    .attr("fill","green")
+    .text("Male")
+
+  </script>
+</body>
+
