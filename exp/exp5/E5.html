@@ -1,109 +1,54 @@
 <!DOCTYPE html>
+<html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <title>Bar Chart</title>
-  <script src="../d3.min.js"></script>
-  <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
-
-  <style>
-    .tick text {
-      font-size: 12px; 
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E5</title>
+    <script src="../d3.min.js"></script>
+    <style>
+        .tick text {
+            font-size: 12px;
+        }
+    </style>
 </head>
+
 <body>
-    <!-- <p>lalal</p> -->
-  <script>
-      //1、定义宽高
-    const width = 600;
-    const height = 450;
-    const margin = { top: 25, right: 35, bottom: 100, left: 50 };
+    <h1>Radial Tree using RT algorithm</h1>
+    <script>
+        width = 640
+        height = 202
+        margin = ({ top: 20, right: 0, bottom: 0, left: 30 })
+        // import {Legend} from "@d3/color-legend"
+        fruits = [
+            { name: "🍊", count: 21 },
+            { name: "🍇", count: 13 },
+            { name: "🍏", count: 8 },
+            { name: "🍌", count: 5 },
+            { name: "🍐", count: 3 },
+            { name: "🍋", count: 2 },
+            { name: "🍎", count: 1 },
+            { name: "🍉", count: 1 }]
 
-    //2、确定初始数据
-    const data = [
-      {year:"First", male:180 ,female:145},
-      {year:"Second", male:179 ,female:106},
-      {year:"Third", male:510 ,female:196},
-      {year:"Crew", male:862 ,female:23},
-    ];
+        // fruits.map(d => d.count)
+        x = d3.scaleLinear()
+            .domain([0, d3.max(fruits, d => d.count)])
+            .range([margin.left, width - margin.right])
+            .interpolate(d3.interpolateRound)
 
-    //3、堆栈图颜色设置
-	  const colors = ['green', 'purple'];  //颜色分组
-    const groups = ['male', 'female']; //类别分组
-    const layout = d3.stack().keys(groups)(data);//生成以0到groups.length-1为主键的堆栈生成器
+        y = d3.scaleBand()
+            .domain(fruits.map(d => d.name))
+            .range([margin.top, height - margin.bottom])
+            .padding(0.1)
+            .round(true)
 
-    const svg = d3.select('body')                    //选择body元素
-                  .append('svg')                     //在body元素中添加svg
-                  .attr('width', width + margin.left + margin.right) //设定<svg>的宽度属性
-                  .attr('height', height + margin.top + margin.bottom) //设定<svg>的高度属性
-                  .append('g')
-                  .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
-    
-    //4、绘制坐标轴比例尺
-    const xScale = d3.scaleBand()
-    	             .padding(0.4)  //设置条形图的间隔
-    	             .domain(data.map(d => d.year))  //对条形图的横坐标进行映射
-    	             .range([0, width-15]);
-    
+        console.log(fruits)
+        // alert(fruits);
+    </script>
 
-    const yMax = 1000;
-    const yScale = d3.scaleLinear()
-    	            .domain([0, yMax])
-    	            .range([height, 0]);
-    
-    const xAxis = d3.axisBottom(xScale);
-    const yAxis = d3.axisLeft(yScale).ticks(10);
-   
-    svg.append('g')
-    	.attr('transform', `translate(0, ${height})`)
-      .call(xAxis)
-    	.selectAll('text')
-    svg.append('g').call(yAxis);
+    ]
 
-    //堆栈图
-    svg
-    	.selectAll('.group')
-    	.data(layout)
-    	.enter()
-    	.append('g')
-    	.attr('year', ({key}) => key)
-    	.attr('fill', (d, i) => colors[i])
-      .selectAll('body')
-    	.data(d => d)
-    	.enter()
-    	.append('rect')
-    	.attr('x', ({data: {year}}) => xScale(year))
-    	.attr('y', ([y, h]) => yScale(h))
-        .attr('width', xScale.bandwidth())
-        .attr('height', ([y, h]) => height - yScale(h - y));
-
-    svg.append("text")
-    .attr("transform","translate(" + width + "," + (height-10) + ")")
-    .style("text-anchor","middle")
-    .style("font-size","20px")
-    .attr("fill","blue")
-    .text("Class")
-
-    svg.append("text")
-    .attr("transform","translate(10,0)")
-    .style("font-size","20px")
-    .attr("fill","red")
-    .text("Amount")
-
-    svg.append("text")
-    .attr("transform","translate(" + width +","+ (height/7) +")")
-    .style("text-anchor","middle")
-    .style("font-size","18px")
-    .attr("fill","purple")
-    .text("Female")
-
-    svg.append("text")
-    .attr("transform","translate(" + (width-10) +","+ (height/7-30) +")")
-    .style("text-anchor","middle")
-    .style("font-size","18px")
-    .attr("fill","green")
-    .text("Male")
-
-  </script>
 </body>
 
+</html>
