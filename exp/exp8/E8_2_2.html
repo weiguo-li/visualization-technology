@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script> -->
+    <script src="../d3.js"></script>
+    <title>Document</title>
+
+</head>
+
+<body>
+    <svg id="svg" width="960" height="500"></svg>
+    <script src="../dagre-d3.min.js"></script>
+    <script>
+        // let dataset = {
+        //     nodes: [
+        //         { id: 0, label: "流动人员", shape: "rect" },
+        //         { id: 1, label: "安全筛查", shape: "rect" },
+        //         { id: 2, label: "热像仪人体测温筛查", shape: "diamond" },
+        //         { id: 3, label: "人工复测", shape: "diamond" },
+        //         { id: 4, label: "快速通过", shape: "rect" },
+        //         { id: 5, label: "紧急处理", shape: "rect" }
+        //     ],
+        //     edges: [
+        //         { source: 0, target: 1, label: "" },
+        //         { source: 1, target: 2, label: "" },
+        //         { source: 2, target: 4, label: "正常" },
+        //         { source: 2, target: 3, label: "不正常" },
+        //         { source: 3, target: 5, label: "不正常" },
+        //         { source: 3, target: 4, label: "正常" }
+        //     ]
+        // }
+        let dataset = {
+            nodes: [
+                { id: 0, label: "电源中断", shape: "rect" },
+                { id: 1, label: "电源管理器", shape: "rect" },
+                { id: 2, label: "数据备份地址生成", shape: "diamond" },
+                { id: 3, label: "备份", shape: "diamond" },
+                { id: 4, label: "进入休眠", shape: "rect" },
+                { id: 5, label: "系统错误", shape: "rect" }
+            ],
+            edges: [
+                { source: 0, target: 1, label: "" },
+                { source: 1, target: 2, label: "" },
+                { source: 2, target: 4, label: "不活跃数据" },
+                { source: 2, target: 3, label: "活跃数据" },
+                { source: 3, target: 5, label: "备份" },
+                { source: 3, target: 4, label: "备份失败" }
+            ]
+        }
+
+
+        // 创建 graph 对象
+        let g = new dagreD3.graphlib.Graph();
+        //设置图
+        g.setGraph({
+            rankdir: 'TB'
+        });
+        dataset.nodes.forEach(item => {
+            g.setNode(item.id, {
+                //节点标签
+                label: item.label,
+                //节点形状
+                shape: item.shape,
+                //节点样式
+                style: "fill:#fff;stroke:#000"
+            })
+        })
+        dataset.edges.forEach(item => {
+            g.setEdge(item.source, item.target, {
+                //边标签
+                label: item.label,
+                //边样式
+                style: "fill:#fff;stroke:#333;stroke-width:1.5px"
+            })
+        })
+        // 创建渲染器
+        let render = new dagreD3.render();
+        // 选择 svg 并添加一个g元素作为绘图容器.
+        let svgGroup = d3.select('svg').append('g');
+        // 在绘图容器上运行渲染器生成流程图.
+        render(svgGroup, g);
+
+
+    </script>
+</body>
+
+</html>

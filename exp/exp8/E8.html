@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>using cola</title>
+    <script src="http://marvl.infotech.monash.edu/webcola/cola.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> <!-- for d3.js -->
+</head>
+
+<body>
+    <script>
+
+
+        var width = 960,
+            height = 500;
+
+        var color = d3.scale.category20();
+
+        var cola = cola.d3adaptor()
+            .linkDistance(80)
+            .avoidOverlaps(true)
+            .handleDisconnected(false)
+            .size([width, height]);
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        var graph = {
+            "nodes": [
+                { "name": "a", "width": 60, "height": 40 },
+                { "name": "b", "width": 60, "height": 40 },
+                { "name": "c", "width": 60, "height": 40 },
+                { "name": "d", "width": 60, "height": 40 },
+                { "name": "e", "width": 60, "height": 40 },
+                { "name": "f", "width": 60, "height": 40 },
+                { "name": "g", "width": 60, "height": 40 }
+            ],
+            "links": [
+                { "source": 1, "target": 2 },
+                { "source": 2, "target": 3 },
+                { "source": 3, "target": 4 },
+                { "source": 0, "target": 1 },
+                { "source": 2, "target": 0 },
+                { "source": 3, "target": 5 },
+                { "source": 0, "target": 5 }
+            ],
+            "groups": [
+                { "leaves": [0], "groups": [1] },
+                { "leaves": [1, 2] },
+                { "leaves": [3, 4] }
+            ]
+        };
+
+        graph.nodes.forEach(function (v) {
+            v.width = v.height = 95;
+        })
+        graph.groups.forEach(function (g) { g.padding = 0.01; });
+        cola
+            .nodes(graph.nodes)
+            .links(graph.links)
+            .groups(graph.groups)
+            .start(100, 0, 50, 50);
+
+        var group = svg.selectAll(".group")
+            .data(graph.groups)
+            .enter().append("rect")
+            .attr("rx", 8).attr("ry", 8)
+            .attr("class", "group")
+            .style("fill", function (d, i) { return color(i); });
+
+        var link = svg.selectAll(".link")
+            .data(graph.links)
+            .enter().append("line")
+            .attr("class", "link");
+
+        var pad = 20;
+        var node = svg.selectAll(".node")
+            .data(graph.nodes)
+            .enter().append("rect")
+            .attr("class", "node")
+            .attr("width", function (d) { return d.width - 2 * pad; })
+            .attr("height", function (d) { return d.height - 2 * pad; })
+            .attr("rx", 5).attr("ry", 5)
+            .style("fill", function (d) { return color(graph.groups.length); })
+            .call(cola.drag)
+            .on('mouseup', function (d) {
+                d.fixed = 0;
+                cola.alpha(1); // fire it off again to satify gridify
+            });
+
+        var label = svg.selectAll(".label")
+            .data(graph.nodes)
+            .enter().append("text")
+            .attr("class", "label")
+            .text(function (d) { return d.name; })
+            .call(cola.drag);
+
+        node.append("title")
+            .text(function (d) { return d.name; });
+
+        cola.on("tick", function () {
+            link.attr("x1", function (d) { return d.source.x; })
+                .attr("y1", function (d) { return d.source.y; })
+                .attr("x2", function (d) { return d.target.x; })
+                .attr("y2", function (d) { return d.target.y; });
+
+            node.attr("x", function (d) { return d.x - d.width / 2 + pad; })
+                .attr("y", function (d) { return d.y - d.height / 2 + pad; });
+
+            group.attr("x", function (d) { return d.bounds.x; })
+                .attr("y", function (d) { return d.bounds.y; })
+                .attr("width", function (d) { return d.bounds.width(); })
+                .attr("height", function (d) { return d.bounds.height(); });
+
+            label.attr("x", function (d) { return d.x; })
+                .attr("y", function (d) {
+                    var h = this.getBBox().height;
+                    return d.y + h / 4;
+                });
+        });
+
+
+
+
+
+    </script>
+
+
+
+</body>
+
+</html>
